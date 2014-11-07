@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import com.sharethis.modelautodelivery.common.modelConstants;
 
 public class ModelAutoDeliveryReducer extends Reducer<Text, Text, Text, Text> {
-	private static final int DAYINC = 10000;
+	private static final int DAYINC = 1000;
 	private static final Logger logger = Logger.getLogger(modelConstants.LOGGER_NAME);
 	
 	private void bucket_output(TreeMap<Integer, List<Integer>> tm, Context context, Text key, int n) throws IOException, InterruptedException {
