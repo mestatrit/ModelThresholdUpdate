@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Ant-Version: Apache Ant 1.9.3
-Created-By: Apache Ant
-Extension-Name: ClickThroughRate 2.5
-Implementation-Version: HEAD.27
-Implementation-Revision: ${revision}
-Built-Date: 2014-05-12 10:11:18
-Built-By: xibin
-

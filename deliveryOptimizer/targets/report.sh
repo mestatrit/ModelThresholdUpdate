@@ -1,1 +1,0 @@
-java -cp bin/DORunner.jar com.sharethis.delivery.job.Report -dop bin/res/deliveryOptimizer.properties -log4jp bin/res/log4j.properties -type $1
