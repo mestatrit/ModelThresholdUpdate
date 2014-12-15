@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="adopt">
+	<property environment="env" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.6" />
+	<property name="source" value="1.6" />
+	<property name="module" value="PO" />
+	<property file="version"/>
+	<property name="version" value="HEAD"/>
+	<property name="deploy" value="false"/>
+	<property name="jenkins.deploy" value="false"/>
+	<property name="BUILD.BASE" value="./build" />
+	<property name="BUILD.JAR" value="./build.jar" />
+	<property name="BUILD.COMMON.JAR" value="./build.common.jar" />
+	<property name="BUILD.DIR" value="${BUILD.BASE}/${version}" />
+    <property name="LIB" value="lib"/>
+	<property name="xms" value="-Xms1024m" />
+	<property name="xmx" value="-Xmx2048m" />
+	<property name="date" value="dt" />
+	<property name="out" value="analytics" />
+	<property name="histo_result" value="dt" />
+	<property name="csv_out" value="dt" />
+	<property name="group_id" value="0" />
+	<path id="adopt.classpath">
+		<pathelement location="bin" />
+		<pathelement location="lib/hadoop-0.20.0-core.jar" />
+		<pathelement location="lib/commons-lang-2.6.jar" />
+		<pathelement location="lib/log4j-1.2.15.jar" />
+		<pathelement location="lib/adlogging.common.jar" />
+		<pathelement location="lib/mysql-connector-java-5.1.18-bin.jar" />	
+		<pathelement location="lib/json.jar" />
+	</path>
+	<target depends="cleanall" name="init">
+		<mkdir dir="bin" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>	
+	</target>
+	<target name="clean">
+		<delete dir="bin" />
+	</target>
+	<target depends="clean" name="cleanall" />
+	<target name="build-subprojects" />
+	<target depends="init" name="build-project">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}" includeantruntime="false">
+			<src path="src" />
+			<classpath refid="adopt.classpath" />
+		</javac>
+	</target>
+	<tstamp>
+		<format property="DATE-TIME" pattern="yyyy-MM-dd kk:mm:ss" unit="second"/>
+	</tstamp>
+	<target depends="build-subprojects,build-project" name="build" />
+	<target depends="build" name="app_jar">
+	    <buildnumber file="build.num"/>
+		<manifest file="MANIFEST.MF">
+			<attribute name="Extension-Name" value="AdOpt 2.5"/>
+			<attribute name="Implementation-Version" value="${version}.${build.number}"/>
+			<attribute name="Implementation-Revision" value="${revision}"/>
+			<attribute name="Built-Date" value="${DATE-TIME}"/>
+	        <attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Created-By" value="Apache Ant"/>
+		</manifest>
+		<jar basedir="bin" jarfile="bin/AdOpt.jar" manifest="MANIFEST.MF" />
+		<condition property="do.not.deploy">
+			<and>
+				<or>
+				<equals arg1="${deploy}" arg2="false" trim="true"/>
+				<equals arg1="${jenkins.deploy}" arg2="false" trim="true"/>
+				</or>
+				<available file="version"/>
+			</and>
+		</condition>
+	</target>
+	<target name="clean_version" if="do.not.deploy" depends="app_jar">
+		<delete file="version"/>
+	</target>
+	<target depends="app_jar, pack_jar, clean_version" name="all" />
+	<target depends="app_jar" name="pack_jar">
+		<exec executable="sh">
+			<arg value="scripts/pack_jar.sh" />
+		</exec>
+	</target>
+	<!---->
+	<target name="huiread">
+		<exec executable="sh">
+			<arg value="scripts/huiread.sh" />
+			<arg line="${date}" />
+		</exec>
+	</target>
+	<target name="huiwrite">
+		<exec executable="sh">
+			<arg value="scripts/huiwrite.sh" />
+			<arg line="${date}" />
+		</exec>
+	</target>
+	<!---->
+	<tstamp>
+		<format property="build_time" pattern="MM/dd/yyyy hh:mm:ss" />
+	</tstamp>
+	<target name="version-file">
+		<echo file="${BUILD.DIR}/version" message="${version}  ${build_time}" />
+	</target>
+	<target name="tar_clean">
+		<delete dir="${BUILD.DIR}" />
+		<mkdir dir="${BUILD.DIR}" />
+	</target>
+	<target name="tar_init" depends="tar_clean, version-file">
+		<copy includeemptydirs="false" todir="${BUILD.DIR}/bin">
+			<fileset dir="bin">
+				<include name="*" />
+			</fileset>
+		</copy>
+		<copy todir="${BUILD.DIR}">
+			<fileset dir=".">
+				<include name="build.xml" />
+				<include name="readme.txt" />
+			</fileset>
+		</copy>
+		<copy todir="${BUILD.DIR}/scripts">
+			<fileset dir="scripts">
+				<include name="*" />
+			</fileset>
+		</copy>
+		<copy todir="${BUILD.DIR}/lib">
+			<fileset dir="lib">
+				<include name="*" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="tarball" depends="all, tar_init">
+		<tar destfile="sharethis.${module}.${version}.tar.gz" basedir="${BUILD.DIR}" compression="gzip" excludes="src/**, **/com/**, .git/**, **/*.gz, **/*.zip **/*.tar" />
+	</target>
+	<target name="make_tarball" depends="tar_init">
+                <tar destfile="sharethis.${module}.${version}.tar.gz" basedir="${BUILD.DIR}" compression="gzip" excludes="src/**, **/com/**, .git/**, **/*.gz, **/*.zip **/*.tar" />
+        </target>
+	<target name="doc_init">
+		<delete dir="javadoc" />
+		<mkdir dir="javadoc" />
+	</target>
+	<target name="javadoc" depends="doc_init" description="Create Javadocs">
+		<javadoc classpathref="adopt.classpath" destdir="javadoc" access="private" maxmemory="512m">
+			<fileset dir="src" includes="**/*.java" />
+		</javadoc>
+	</target>
+</project>

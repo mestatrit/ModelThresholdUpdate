@@ -1,0 +1,6 @@
+This directory is used to generate the performance model.
+Phase1: 
+ -  start will be a simple CTR aggregation.
+
+Phase 2: 
+ - Add M/L model

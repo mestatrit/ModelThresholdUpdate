@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="clickthroughrate">
+	<property environment="env" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.6" />
+	<property name="source" value="1.6" />
+	<property name="module" value="CTR" />
+	<property file="version"/>
+	<property name="version" value="HEAD"/>
+	<property name="deploy" value="false"/>
+	<property name="jenkins.deploy" value="false"/>
+	<property name="BUILD.BASE" value="./build" />
+	<property name="BUILD.JAR" value="./build.jar" />
+	<property name="BUILD.COMMON.JAR" value="./build.common.jar" />
+	<property name="BUILD.DIR" value="${BUILD.BASE}/${version}" />
+    <property name="LIB" value="lib"/>
+	<property name="xms" value="-Xms1024m" />
+	<property name="xmx" value="-Xmx2048m" />
+	<property name="date" value="dt" />
+	<property name="out" value="analytics" />
+	<property name="histo_result" value="dt" />
+	<property name="csv_out" value="dt" />
+	<property name="group_id" value="0" />
+	<path id="clickthroughrate.classpath">
+		<pathelement location="bin" />             
+		<!--pathelement location="lib/hadoop-0.20.0-core.jar" />
+        <pathelement location="lib/commons-httpclient-3.1.jar" /-->
+        <pathelement location="lib/hadoop-core-2.0.0-mr1-cdh4.0.0.jar" />
+        <pathelement location="lib/hadoop-common-2.0.0-cdh4.0.0.jar" />
+        <pathelement location="lib/hadoop-auth-2.0.0-cdh4.0.0.jar" />
+        <pathelement location="lib/hadoop-hdfs-2.0.0-cdh4.0.0.jar" />
+        <pathelement location="lib/commons-lang-2.6.jar" />
+        <pathelement location="lib/commons-lang3-3.0.1.jar"/>
+        <pathelement location="lib/commons-logging-1.1.1.jar"/>
+    	<pathelement location="lib/commons-codec-1.6.jar"/>
+        <pathelement location="lib/commons-configuration-1.9.jar"/>
+        <pathelement location="lib/commons-collections-3.2.1.jar"/>
+		<pathelement location="lib/log4j-1.2.15.jar" />
+		<pathelement location="lib/slf4j-api-1.7.1.jar" />
+		<pathelement location="lib/slf4j-log4j12-1.7.1.jar" />
+		<pathelement location="lib/adlogging.common.jar" />
+		<pathelement location="lib/cascading-hadoop-2.0.4.jar" />
+		<pathelement location="lib/cascading-core-2.0.4.jar" />
+		<pathelement location="lib/cascading-xml-2.0.4.jar" />
+		<pathelement location="lib/cascading-test-2.0.4.jar" />
+		<pathelement location="lib/mysql-connector-java-5.1.18-bin.jar" />	
+		<pathelement location="lib/gson-2.2.4.jar" />
+		<pathelement location="lib/guava-13.0.1.jar" />
+		<pathelement location="lib/json.jar" />
+		<pathelement location="lib/json_simple.jar" />
+		<pathelement location="lib/weka.jar" />
+		<pathelement location="lib/AdOpt.jar" />
+        <pathelement location="lib/commons-math-2.2.jar" />
+        <pathelement location="lib/commons-math3-3.1.1.jar" />
+        <pathelement location="lib/filecrush-2.0-SNAPSHOT.jar" />
+	</path>
+	<target depends="cleanall" name="init">
+		<mkdir dir="bin" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>	
+		<copy todir="bin/res">
+			<fileset dir="res">
+				<include name="*.properties" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="clean">
+		<delete dir="bin" />
+	</target>
+	<target depends="clean" name="cleanall" />
+	<target name="build-subprojects" />
+	<target depends="init" name="build-project">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}" includeantruntime="false">
+			<src path="src" />
+			<classpath refid="clickthroughrate.classpath" />
+		</javac>
+	</target>
+	<tstamp>
+		<format property="DATE-TIME" pattern="yyyy-MM-dd kk:mm:ss" unit="second"/>
+		<format property="build_date" pattern="yyyyMMdd" />
+	</tstamp>
+	<target depends="build-subprojects,build-project" name="build" />
+	<target depends="build" name="app_jar">
+	    <buildnumber file="build.num"/>
+		<manifest file="MANIFEST.MF">
+			<attribute name="Extension-Name" value="ClickThroughRate 2.5"/>
+			<attribute name="Implementation-Version" value="${version}.${build.number}"/>
+			<attribute name="Implementation-Revision" value="${revision}"/>
+			<attribute name="Built-Date" value="${DATE-TIME}"/>
+	        <attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Created-By" value="Apache Ant"/>
+		</manifest>
+		<jar basedir="bin" jarfile="bin/ClickThroughRateRunner.jar" manifest="MANIFEST.MF" />
+		<condition property="do.not.deploy">
+			<and>
+				<or>
+				<equals arg1="${deploy}" arg2="false" trim="true"/>
+				<equals arg1="${jenkins.deploy}" arg2="false" trim="true"/>
+				</or>
+				<available file="version"/>
+			</and>
+		</condition>
+	</target>
+	<target name="clean_version" if="do.not.deploy" depends="app_jar">
+		<delete file="version"/>
+	</target>
+	<target depends="app_jar, pack_jar, clean_version" name="all" />
+	<target depends="app_jar" name="pack_jar">
+		<exec executable="sh">
+			<arg value="scripts/pack_jar.sh" />
+		</exec>
+	</target>
+	<!---->
+	<target name="huiread">
+		<exec executable="sh">
+			<arg value="scripts/huiread.sh" />
+			<arg line="${date}" />
+		</exec>
+	</target>
+	<target name="huiwrite">
+		<exec executable="sh">
+			<arg value="scripts/huiwrite.sh" />
+			<arg line="${date}" />
+		</exec>
+	</target>
+	<!---->
+	<tstamp>
+		<format property="build_time" pattern="MM/dd/yyyy HH:mm:ss" />
+        <format property="build_timestamp" pattern="yyyyMMddHHmmss" />
+	</tstamp>
+	<target name="version-file">
+		<echo file="${BUILD.DIR}/version" message="${version}  ${build_time}" />
+	</target>
+	<target name="tar_clean">
+		<delete dir="${BUILD.DIR}" />
+		<mkdir dir="${BUILD.DIR}" />
+	</target>
+	<target name="tar_init" depends="tar_clean, version-file">
+		<copy todir="${BUILD.DIR}/conf">
+			<fileset dir="res">
+				<include name="*.properties" />
+			</fileset>
+			<fileset dir="${basedir}/scripts">
+                <include name="**/env_*.sh"/>
+		    </fileset>
+		</copy>
+		<copy todir="${BUILD.DIR}/jar">
+			<fileset dir="bin">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${BUILD.DIR}/bin">
+			<fileset dir="scripts">
+				<include name="*.sh" />
+				<exclude name="**/env_*.sh" />
+			</fileset>
+		</copy>
+		<mkdir dir="${BUILD.DIR}/logs"/>
+		<mkdir dir="${BUILD.DIR}/tmp"/>
+		<mkdir dir="${BUILD.DIR}/run"/>
+	</target>
+	<target name="tarball" depends="all, tar_init">
+		<tar destfile="${basedir}/sharethis.${module}.${version}.${build_timestamp}.tar.gz" compression="gzip" excludes="src/**, **/com/**, .git/**, **/*.gz, **/*.zip **/*.tar">			
+			<tarfileset dir="${BUILD.DIR}" dirmode="777">
+				<include name="run" />
+				<include name="tmp" />
+				<include name="logs" />
+			</tarfileset>
+			<tarfileset dir="${BUILD.DIR}" dirmode="555" mode="555">
+				<include name="bin" />
+				<include name="bin/*.sh" />
+			</tarfileset>
+			<tarfileset dir="${BUILD.DIR}" dirmode="755" mode="755">
+				<include name="conf" />
+				<include name="conf/*.sh" />
+			</tarfileset>
+			<tarfileset dir="${BUILD.DIR}">
+				<exclude name="run" />
+				<exclude name="tmp" />
+				<exclude name="logs" />
+				<exclude name="bin" />
+				<exclude name="bin/*.sh" />
+				<exclude name="conf" />
+				<exclude name="conf/*.sh" />
+				<include name="**/*" />
+			</tarfileset>					
+		</tar>
+	</target>
+	<target name="make_tarball" depends="tar_init">
+                <tar destfile="sharethis.${module}.${version}.${build_timestamp}.tar.gz" basedir="${BUILD.DIR}" compression="gzip" excludes="src/**, **/com/**, .git/**, **/*.gz, **/*.zip **/*.tar" />
+        </target>
+	<target name="doc_init">
+		<delete dir="javadoc" />
+		<mkdir dir="javadoc" />
+	</target>
+	<target name="javadoc" depends="doc_init" description="Create Javadocs">
+		<javadoc classpathref="clickthroughrate.classpath" destdir="javadoc" access="private" maxmemory="512m">
+			<fileset dir="src" includes="**/*.java" />
+		</javadoc>
+	</target>
+	
+    <target name="ctrpqueryingmodel">
+        <java classname="com.sharethis.adoptimization.clickthroughrate.ctrmodel.modelvalidation.CTRPQueryingModel" failonerror="true" fork="yes">
+      	    <arg line="bin/res/ctr_model.properties"/>
+            <classpath refid="clickthroughrate.classpath"/>
+        </java>
+    </target>
+
+    <target name="ctrpqueryingbase">
+        <java classname="com.sharethis.adoptimization.clickthroughrate.ctrmodel.modelvalidation.CTRPQueryingCTRBase" failonerror="true" fork="yes">
+      	    <arg line="bin/res/ctr_model.properties"/>
+            <classpath refid="clickthroughrate.classpath"/>
+        </java>
+    </target>
+	
+    <target name="ctrpprediction">
+        <java classname="com.sharethis.adoptimization.clickthroughrate.ctrmodel.modelvalidation.CTRPComputingPrediction" failonerror="true" fork="yes">
+      	    <arg line="bin/res/ctr_model.properties"/>
+            <classpath refid="clickthroughrate.classpath"/>
+        </java>
+    </target>
+</project>

@@ -1,0 +1,1 @@
+java -cp bin/DORunner.jar com.sharethis.performance.report.Report -dop bin/res/deliveryOptimizer.properties -log4jp bin/res/log4j.properties -path $1 -startDate $2 -endDate $3 -minClk $4 -minImp $5 -network $6 -data $7

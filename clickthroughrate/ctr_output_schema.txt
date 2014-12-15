@@ -1,0 +1,379 @@
+
+NOTE: sum_cost is the sum of cpm of all successful bids. So, the real cost should be sum_cost divided by 1000.
+
+
+The schema of output files:
+
+camp_adg_crtv_slot_net_usg_hourly
+camp_adg_crtv_slot_net_usg_daily
+camp_adg_crtv_slot_net_usg_weekly
+camp_adg_crtv_slot_net_usg_x_weeks						
+										
+Data Fields:
+- campaign id
+- adgroup id
+- creative id
+- adslotvisibility
+- domain name
+- user segment id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+camp_daily
+camp_weekly
+camp_x_weeks
+
+Data Fields:
+- campaign id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+adg_daily
+adg_weekly
+adg_x_weeks
+
+Data Fields:
+- campaign id
+- adgroup id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+crtv_daily
+crtv_weekly
+crtv_x_weeks
+
+Data Fields:
+- campaign id
+- adgroup id
+- creative id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+net_daily
+net_weekly
+net_x_weeks
+
+Data Fields:
+- domain name
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+net_camp_daily
+net_camp_weekly
+net_camp_x_weeks						
+										
+Data Fields:
+- domain name
+- campaign id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+net_adg_daily
+net_adg_weekly
+net_adg_x_weeks						
+										
+Data Fields:
+- domain name
+- campaign id
+- adgroup id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+net_crtv_daily
+net_crtv_weekly
+net_crtv_x_weeks						
+										
+Data Fields:
+- domain name
+- campaign id
+- adgroup id
+- creative id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+usg_daily
+usg_weekly
+usg_x_weeks						
+										
+Data Fields:
+- user segment id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+usg_camp_daily
+usg_camp__weekly
+usg_camp_x_weeks						
+										
+Data Fields:
+- user segment id
+- campaign id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+usg_adg_daily
+usg_adg_weekly
+usg_adg_x_weeks						
+										
+Data Fields:
+- user segment id
+- campaign id
+- adgroup id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+usg_crtv_daily
+usg_crtv_weekly
+usg_crtv_x_weeks						
+										
+Data Fields:
+- user segment id
+- campaign id
+- adgroup id
+- creative id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+asv_daily
+asv_weekly
+asv_slot_x_weeks						
+										
+Data Fields:
+- adslotvisibility
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+asv_camp_daily
+asv_camp_weekly
+asv_camp_x_weeks						
+										
+Data Fields:
+- adslotvisibility
+- campaign id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+asv_adg_daily
+asv_adg_weekly
+asv_adg_x_weeks						
+										
+Data Fields:
+- adslotvisibility
+- campaign id
+- adgroup id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+asv_crtv_daily
+asv_crtv_weekly
+asv_crtv_x_weeks						
+										
+Data Fields:
+- adslotvisibility
+- campaign id
+- adgroup id
+- creative id
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+	
+usg_net_daily
+usg_net_weekly
+usg_net_x_weeks						
+										
+Data Fields:
+- user segment id
+- domain name
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+usg_asv_daily
+usg_asv_weekly
+usg_asv_x_weeks						
+										
+Data Fields:
+- user segment id
+- adslotvisibility
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+net_asv_daily
+net_asv_weekly
+net_asv_x_weeks						
+										
+Data Fields:
+- domain name
+- adslotvisibility
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+
+
+usg_net_asv_daily
+usg_net_asv_weekly
+usg_net_asv_x_weeks						
+										
+Data Fields:
+- user seg id
+- domain name
+- adslotvisibility
+- sum_impressions
+- sum_clicks
+- sum_cost
+- ctr
+- e_cpm
+- e_cpc
+						
+
+
+rtb_camp_adg_crtv_slot_net_usg_x_weeks
+rtb_camp_x_weeks
+rtb_adg_x_weeks
+rtb_crtv_x_weeks
+rtb_net_x_weeks
+rtb_net_camp_x_weeks
+rtb_net_adg_x_weeks
+rtb_net_crtv_x_weeks
+rtb_usg_x_weeks
+rtb_usg_camp_x_weeks
+rtb_usg_adg_x_weeks
+rtb_usg_crtv_x_weeks
+rtb_asv_x_weeks
+rtb_asv_camp_x_weeks
+rtb_asv_adg_x_weeks
+rtb_asv_crtv_x_weeks
+rtb_usg_net_x_weeks
+rtb_usg_asv_x_weeks
+rtb_net_asv_x_weeks
+rtb_usg_net_asv_x_weeks
+
+Data Fields:
+- type
+- key
+- sum_impressions
+- sum_clicks
+- ctr
+
+
+rtb_googleId_cookie_mapping_hourly
+
+Data Fields:
+- google id
+- cookie id
+- count
+
+
+rtb_ic_pb_hourly
+
+Data Fields:
+- winning_price
+- adslotvisibility
+- city
+- pb_google_id
+- user_seg_id
+- date
+- timestamp
+- campaign_name
+- jid
+- campaign_id
+- adgroup_id
+- creative_id
+- domain_name
+- deal_id
+- ip_address
+- user_agent
+- cookie
+- service_type
+- click_flag
+- imp_flag

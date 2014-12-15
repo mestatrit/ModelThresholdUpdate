@@ -1,0 +1,1 @@
+/usr/local/mysql/bin/mysql --user sharethis --password=sharethis --host adopsdb1001.east.sharethis.com < sql/adGroupSettings.sql
